@@ -6,12 +6,12 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:admin@localhost/t
 db = SQLAlchemy(app)
 
 class books(db.Model):
-    id_book = db.Column(primary_key=True)
-    title = db.Column()
-    author = db.Column()
-    year = db.Column()
-    total_pages = db.Column()
-    category = db.Column()
+    id_book = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.String(255), nullable=False)
+    author = db.Column(db.String(255), nullable=False)
+    year = db.Column(db.Integer, nullable=False)
+    total_pages = db.Column(db.Integer, nullable=False)
+    category = db.Column(db.String(255), nullable=False)
 
 @app.route('/', methods=['GET'])
 def view_books():
@@ -47,11 +47,11 @@ def view_book(id_book):
 @app.route('/', methods=['POST'])
 def add_book():
     data = books(
-        title = request.json['title'],
-        author = request.json['author'],
-        year = request.json['year'],
-        total_pages = request.json['total_pages'],
-        category = request.json['category']
+        title = request.form['title'],
+        author = request.form['author'],
+        year = request.form['year'],
+        total_pages = request.form['total_pages'],
+        category = request.form['category']
     )
     db.session.add(data)
     db.session.commit()
@@ -60,11 +60,11 @@ def add_book():
 @app.route('/<int:id_book>', methods=['PUT'])
 def update_book(id_book):
     data = books.query.filter_by(id_book=id_book).first()
-    data.title = request.json['title']
-    data.author = request.json['author']
-    data.year = request.json['year']
-    data.total_pages = request.json['total_pages']
-    data.category = request.json['category']
+    data.title = request.form['title']
+    data.author = request.form['author']
+    data.year = request.form['year']
+    data.total_pages = request.form['total_pages']
+    data.category = request.form['category']
     db.session.commit()
     return jsonify({'message': 'Book updated'})
 
